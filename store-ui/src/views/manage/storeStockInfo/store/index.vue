@@ -204,6 +204,14 @@
           <el-button
             size="mini"
             type="text"
+            icon="el-icon-edit"
+            @click="handleShipment(scope.row)"
+            v-hasPermi="['manage:goodsShipmentInfo:add']"
+          >出货
+          </el-button>
+          <el-button
+            size="mini"
+            type="text"
             icon="el-icon-delete"
             @click="handleDelete(scope.row)"
             v-hasPermi="['manage:storeStockInfo:remove']"
@@ -317,6 +325,43 @@
         <el-button @click="cancel">取 消</el-button>
       </div>
     </el-dialog>
+
+    <!-- 添加或修改商品出货信息对话框 -->
+    <el-dialog :title="title" :visible.sync="openShipment" width="500px" append-to-body>
+      <el-form ref="form" :model="form" :rules="rulesShipment" label-width="80px">
+        <!--        <el-form-item label="仓库编号" prop="storeId">-->
+        <!--          <el-input v-model="form.storeId" placeholder="请输入仓库编号"/>-->
+        <!--        </el-form-item>-->
+        <!--        <el-form-item label="商品编号" prop="goodsId">-->
+        <!--          <el-input v-model="form.goodsId" placeholder="请输入商品编号"/>-->
+        <!--        </el-form-item>-->
+        <el-form-item label="出货标题" prop="shipmentTitle">
+          <el-input v-model="form.shipmentTitle" placeholder="请输入出货标题"/>
+        </el-form-item>
+        <el-form-item label="出货数量" prop="quantity">
+          <el-input-number :min="0" v-model="form.quantity" placeholder="请输入出货数量"/>
+        </el-form-item>
+        <el-form-item label="出货价格" prop="shipmentPrice">
+          <el-input-number :min="0" :precision="2" v-model="form.shipmentPrice" placeholder="请输入出货价格"/>
+        </el-form-item>
+        <el-form-item label="出货时间" prop="shipmentDate">
+          <el-date-picker clearable
+                          v-model="form.shipmentDate"
+                          type="date"
+                          value-format="yyyy-MM-dd"
+                          placeholder="请选择出货时间"
+          >
+          </el-date-picker>
+        </el-form-item>
+        <el-form-item label="备注" prop="remark">
+          <el-input v-model="form.remark" type="textarea" placeholder="请输入内容"/>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button type="primary" @click="submitShipment">确 定</el-button>
+        <el-button @click="cancel">取 消</el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
@@ -331,11 +376,28 @@ import {
 import { listGoodsInfo } from '@/api/manage/goodsInfo'
 import { listSupplierInfo } from '@/api/manage/supplierInfo'
 import { addGoodsPurchaseInfo } from '@/api/manage/goodsPurchaseInfo'
+import { addGoodsShipmentInfo } from '@/api/manage/goodsShipmentInfo'
 
 export default {
   name: 'StoreStockInfo',
   data() {
     return {
+      //出货
+      openShipment: false,
+      rulesShipment: {
+        shipmentTitle: [
+          { required: true, message: '出货标题不能为空', trigger: 'blur' }
+        ],
+        quantity: [
+          { required: true, message: '出货数量不能为空', trigger: 'blur' }
+        ],
+        shipmentPrice: [
+          { required: true, message: '出货价格不能为空', trigger: 'blur' }
+        ],
+        shipmentDate: [
+          { required: true, message: '出货时间不能为空', trigger: 'blur' }
+        ]
+      },
       //供应商信息
       supplierInfoList: [],
       supplierInfoLoading: false,
@@ -449,6 +511,20 @@ export default {
     this.getSupplierInfoList()
   },
   methods: {
+    //出货
+    handleShipment(row) {
+      this.reset()
+      this.form.storeId = this.storeId
+      this.form.goodsId = row.goodsId
+      this.openShipment = true
+    },
+    submitShipment() {
+      addGoodsShipmentInfo(this.form).then(res => {
+        this.$modal.msgSuccess('出货成功')
+        this.openShipment = false
+        this.getList()
+      })
+    },
     /**
      * 获取商品列表推荐
      * @param query
@@ -481,7 +557,8 @@ export default {
         this.supplierInfoList = res.rows
         this.supplierInfoLoading = false
       })
-    }, /**
+    },
+    /**
      * 获取商品列表推荐
      * @param query
      */
@@ -513,22 +590,25 @@ export default {
         this.goodsInfoList = res.rows
         this.goodsInfoLoading = false
       })
-    },
+    }
+    ,
     //提交商品进货信息
     submitFormPurchase() {
-      this.form.storeId=this.storeId
+      this.form.storeId = this.storeId
       addGoodsPurchaseInfo(this.form).then(response => {
         this.$modal.msgSuccess('新增成功')
         this.openPurchase = false
         this.getList()
       })
-    },
+    }
+    ,
     //打开商品进货信息
     handleAddPurchase() {
       this.reset()
       this.openPurchase = true
       this.title = '添加采购信息'
-    },
+    }
+    ,
     /** 查询仓库库存列表 */
     getList() {
       this.loading = true
@@ -546,13 +626,16 @@ export default {
         this.total = response.total
         this.loading = false
       })
-    },
+    }
+    ,
     // 取消按钮
     cancel() {
       this.open = false
       this.openPurchase = false
+      this.openShipment = false
       this.reset()
-    },
+    }
+    ,
     // 表单重置
     reset() {
       this.form = {
@@ -568,31 +651,36 @@ export default {
         remark: null
       }
       this.resetForm('form')
-    },
+    }
+    ,
     /** 搜索按钮操作 */
     handleQuery() {
       this.queryParams.pageNum = 1
       this.getList()
-    },
+    }
+    ,
     /** 重置按钮操作 */
     resetQuery() {
       this.daterangeCreateTime = []
       this.daterangeUpdateTime = []
       this.resetForm('queryForm')
       this.handleQuery()
-    },
+    }
+    ,
     // 多选框选中数据
     handleSelectionChange(selection) {
       this.ids = selection.map(item => item.stockId)
       this.single = selection.length !== 1
       this.multiple = !selection.length
-    },
+    }
+    ,
     /** 新增按钮操作 */
     handleAdd() {
       this.reset()
       this.open = true
       this.title = '添加仓库库存'
-    },
+    }
+    ,
     /** 修改按钮操作 */
     handleUpdate(row) {
       this.reset()
@@ -602,7 +690,8 @@ export default {
         this.open = true
         this.title = '修改仓库库存'
       })
-    },
+    }
+    ,
     /** 提交按钮 */
     submitForm() {
       this.$refs['form'].validate(valid => {
@@ -622,7 +711,8 @@ export default {
           }
         }
       })
-    },
+    }
+    ,
     /** 删除按钮操作 */
     handleDelete(row) {
       const stockIds = row.stockId || this.ids
@@ -633,7 +723,8 @@ export default {
         this.$modal.msgSuccess('删除成功')
       }).catch(() => {
       })
-    },
+    }
+    ,
     /** 导出按钮操作 */
     handleExport() {
       this.download('manage/storeStockInfo/export', {

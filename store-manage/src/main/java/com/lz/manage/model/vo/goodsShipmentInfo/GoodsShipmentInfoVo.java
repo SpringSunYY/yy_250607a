@@ -1,15 +1,14 @@
 package com.lz.manage.model.vo.goodsShipmentInfo;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.lz.common.annotation.Excel;
+import com.lz.manage.model.domain.GoodsShipmentInfo;
+import lombok.Data;
+import org.springframework.beans.BeanUtils;
+
 import java.io.Serializable;
-import java.util.Date;
 import java.math.BigDecimal;
 import java.util.Date;
-import com.fasterxml.jackson.annotation.JsonFormat;
-import lombok.Data;
-import com.lz.common.annotation.Excel;
-import org.springframework.beans.BeanUtils;
-import com.fasterxml.jackson.annotation.JsonFormat;
-import com.lz.manage.model.domain.GoodsShipmentInfo;
 /**
  * 商品出货信息Vo对象 tb_goods_shipment_info
  *
@@ -28,10 +27,16 @@ public class GoodsShipmentInfoVo implements Serializable
     /** 仓库编号 */
     @Excel(name = "仓库编号")
     private Long storeId;
+    @Excel(name = "仓库名称")
+    private String storeName;
 
-    /** 商品编号 */
+    /**
+     * 商品编号
+     */
     @Excel(name = "商品编号")
     private Long goodsId;
+    @Excel(name = "商品名称")
+    private String goodsName;
 
     /** 出货标题 */
     @Excel(name = "出货标题")
