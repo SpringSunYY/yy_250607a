@@ -6,9 +6,14 @@ import com.lz.common.utils.DateUtils;
 import com.lz.common.utils.SecurityUtils;
 import com.lz.common.utils.StringUtils;
 import com.lz.manage.mapper.StoreStockInfoMapper;
+import com.lz.manage.model.domain.GoodsInfo;
+import com.lz.manage.model.domain.StoreInfo;
 import com.lz.manage.model.domain.StoreStockInfo;
+import com.lz.manage.model.domain.SupplierInfo;
 import com.lz.manage.model.dto.storeStockInfo.StoreStockInfoQuery;
 import com.lz.manage.model.vo.storeStockInfo.StoreStockInfoVo;
+import com.lz.manage.service.IGoodsInfoService;
+import com.lz.manage.service.IStoreInfoService;
 import com.lz.manage.service.IStoreStockInfoService;
 import org.springframework.stereotype.Service;
 
@@ -27,6 +32,11 @@ public class StoreStockInfoServiceImpl extends ServiceImpl<StoreStockInfoMapper,
     @Resource
     private StoreStockInfoMapper storeStockInfoMapper;
 
+    @Resource
+    private IGoodsInfoService goodsInfoService;
+
+    @Resource
+    private IStoreInfoService storeInfoService;
     //region mybatis代码
 
     /**
@@ -48,7 +58,18 @@ public class StoreStockInfoServiceImpl extends ServiceImpl<StoreStockInfoMapper,
      */
     @Override
     public List<StoreStockInfo> selectStoreStockInfoList(StoreStockInfo storeStockInfo) {
-        return storeStockInfoMapper.selectStoreStockInfoList(storeStockInfo);
+        List<StoreStockInfo> storeStockInfos = storeStockInfoMapper.selectStoreStockInfoList(storeStockInfo);
+        for (StoreStockInfo info : storeStockInfos) {
+            StoreInfo storeInfo = storeInfoService.selectStoreInfoByStoreId(info.getStoreId());
+            if (StringUtils.isNotNull(storeInfo)) {
+                info.setStoreName(storeInfo.getStoreName());
+            }
+            GoodsInfo goodsInfo = goodsInfoService.selectGoodsInfoByGoodsId(info.getGoodsId());
+            if (StringUtils.isNotNull(goodsInfo)) {
+                info.setGoodsName(goodsInfo.getGoodsName());
+            }
+        }
+        return storeStockInfos;
     }
 
     /**

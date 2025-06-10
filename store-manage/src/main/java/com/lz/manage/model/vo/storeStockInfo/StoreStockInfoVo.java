@@ -27,10 +27,14 @@ public class StoreStockInfoVo implements Serializable
     /** 仓库编号 */
     @Excel(name = "仓库编号")
     private Long storeId;
+    @Excel(name = "仓库")
+    private String storeName;
 
     /** 商品编号 */
     @Excel(name = "商品编号")
     private Long goodsId;
+    @Excel(name = "商品名称")
+    private String goodsName;
 
     /** 库存别名 */
     @Excel(name = "库存别名")

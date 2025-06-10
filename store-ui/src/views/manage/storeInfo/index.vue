@@ -126,7 +126,13 @@
       <el-table-column label="编号" align="center" v-if="columns[0].visible" prop="storeId"/>
       <el-table-column label="仓库名称" :show-overflow-tooltip="true" align="center" v-if="columns[1].visible"
                        prop="storeName"
-      />
+      >
+        <template slot-scope="scope">
+          <router-link :to="'/storeManage/goodsStore/index/' + scope.row.storeId" class="link-type">
+            <span>{{ scope.row.storeName }}</span>
+          </router-link>
+        </template>
+      </el-table-column>
       <el-table-column label="仓库图片" align="center" v-if="columns[2].visible" prop="storeImage" width="100">
         <template slot-scope="scope">
           <image-preview :src="scope.row.storeImage" :width="50" :height="50"/>

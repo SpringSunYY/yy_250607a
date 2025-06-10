@@ -175,12 +175,26 @@ export const dynamicRoutes = [
         meta: { title: '生成表数据', activeMenu: '/tool/gen' }
       }
     ]
+  },
+  {
+    path: '/storeManage/goodsStore',
+    component: Layout,
+    hidden: true,
+    permissions: ['manage:storeStockInfo:list'],
+    children: [
+      {
+        path: 'index/:storeId(\\d+)',
+        component: () => import('@/views/manage/storeStockInfo/store/index'),
+        name: 'GoodsStore',
+        meta: { title: '商品仓库', activeMenu: '/storeManage/storeStockInfo' }
+      }
+    ]
   }
 ]
 
 // 防止连续点击多次路由报错
-let routerPush = Router.prototype.push;
-let routerReplace = Router.prototype.replace;
+let routerPush = Router.prototype.push
+let routerReplace = Router.prototype.replace
 // push
 Router.prototype.push = function push(location) {
   return routerPush.call(this, location).catch(err => err)
