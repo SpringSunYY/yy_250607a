@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.HashMap;
 import java.util.stream.Collectors;
+
+import com.lz.common.utils.SecurityUtils;
 import com.lz.common.utils.StringUtils;
 import java.util.Date;
 import com.fasterxml.jackson.annotation.JsonFormat;
@@ -21,7 +23,7 @@ import com.lz.manage.model.vo.storeInfo.StoreInfoVo;
 
 /**
  * 仓库信息Service业务层处理
- * 
+ *
  * @author YY
  * @date 2025-06-10
  */
@@ -34,7 +36,7 @@ public class StoreInfoServiceImpl extends ServiceImpl<StoreInfoMapper, StoreInfo
     //region mybatis代码
     /**
      * 查询仓库信息
-     * 
+     *
      * @param storeId 仓库信息主键
      * @return 仓库信息
      */
@@ -46,7 +48,7 @@ public class StoreInfoServiceImpl extends ServiceImpl<StoreInfoMapper, StoreInfo
 
     /**
      * 查询仓库信息列表
-     * 
+     *
      * @param storeInfo 仓库信息
      * @return 仓库信息
      */
@@ -58,33 +60,35 @@ public class StoreInfoServiceImpl extends ServiceImpl<StoreInfoMapper, StoreInfo
 
     /**
      * 新增仓库信息
-     * 
+     *
      * @param storeInfo 仓库信息
      * @return 结果
      */
     @Override
     public int insertStoreInfo(StoreInfo storeInfo)
     {
+        storeInfo.setCreateBy(SecurityUtils.getUsername());
         storeInfo.setCreateTime(DateUtils.getNowDate());
         return storeInfoMapper.insertStoreInfo(storeInfo);
     }
 
     /**
      * 修改仓库信息
-     * 
+     *
      * @param storeInfo 仓库信息
      * @return 结果
      */
     @Override
     public int updateStoreInfo(StoreInfo storeInfo)
     {
+        storeInfo.setUpdateBy(SecurityUtils.getUsername());
         storeInfo.setUpdateTime(DateUtils.getNowDate());
         return storeInfoMapper.updateStoreInfo(storeInfo);
     }
 
     /**
      * 批量删除仓库信息
-     * 
+     *
      * @param storeIds 需要删除的仓库信息主键
      * @return 结果
      */
@@ -96,7 +100,7 @@ public class StoreInfoServiceImpl extends ServiceImpl<StoreInfoMapper, StoreInfo
 
     /**
      * 删除仓库信息信息
-     * 
+     *
      * @param storeId 仓库信息主键
      * @return 结果
      */
