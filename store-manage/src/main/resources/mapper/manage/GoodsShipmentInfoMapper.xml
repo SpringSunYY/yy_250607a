@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lz.manage.mapper.GoodsShipmentInfoMapper">
+    
+    <resultMap type="GoodsShipmentInfo" id="GoodsShipmentInfoResult">
+        <result property="shipmentId"    column="shipment_id"    />
+        <result property="storeId"    column="store_id"    />
+        <result property="goodsId"    column="goods_id"    />
+        <result property="shipmentTitle"    column="shipment_title"    />
+        <result property="quantity"    column="quantity"    />
+        <result property="shipmentPrice"    column="shipment_price"    />
+        <result property="shipmentDate"    column="shipment_date"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="remark"    column="remark"    />
+    </resultMap>
+
+    <sql id="selectGoodsShipmentInfoVo">
+        select shipment_id, store_id, goods_id, shipment_title, quantity, shipment_price, shipment_date, create_by, create_time, update_by, update_time, remark from tb_goods_shipment_info
+    </sql>
+
+    <select id="selectGoodsShipmentInfoList" parameterType="GoodsShipmentInfo" resultMap="GoodsShipmentInfoResult">
+        <include refid="selectGoodsShipmentInfoVo"/>
+        <where>  
+            <if test="shipmentId != null "> and shipment_id = #{shipmentId}</if>
+            <if test="storeId != null "> and store_id = #{storeId}</if>
+            <if test="goodsId != null "> and goods_id = #{goodsId}</if>
+            <if test="shipmentTitle != null  and shipmentTitle != ''"> and shipment_title like concat('%', #{shipmentTitle}, '%')</if>
+            <if test="params.beginShipmentDate != null and params.beginShipmentDate != '' and params.endShipmentDate != null and params.endShipmentDate != ''"> and DATE_FORMAT(shipment_date, '%Y-%m-%d') between #{params.beginShipmentDate} and #{params.endShipmentDate}</if>
+            <if test="createBy != null  and createBy != ''"> and create_by like concat('%', #{createBy}, '%')</if>
+            <if test="params.beginCreateTime != null and params.beginCreateTime != '' and params.endCreateTime != null and params.endCreateTime != ''"> and DATE_FORMAT(create_time, '%Y-%m-%d') between #{params.beginCreateTime} and #{params.endCreateTime}</if>
+            <if test="updateBy != null  and updateBy != ''"> and update_by like concat('%', #{updateBy}, '%')</if>
+            <if test="params.beginUpdateTime != null and params.beginUpdateTime != '' and params.endUpdateTime != null and params.endUpdateTime != ''"> and DATE_FORMAT(update_time, '%Y-%m-%d') between #{params.beginUpdateTime} and #{params.endUpdateTime}</if>
+        </where>
+    </select>
+    
+    <select id="selectGoodsShipmentInfoByShipmentId" parameterType="Long" resultMap="GoodsShipmentInfoResult">
+        <include refid="selectGoodsShipmentInfoVo"/>
+        where shipment_id = #{shipmentId}
+    </select>
+
+    <insert id="insertGoodsShipmentInfo" parameterType="GoodsShipmentInfo" useGeneratedKeys="true" keyProperty="shipmentId">
+        insert into tb_goods_shipment_info
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="storeId != null">store_id,</if>
+            <if test="goodsId != null">goods_id,</if>
+            <if test="shipmentTitle != null and shipmentTitle != ''">shipment_title,</if>
+            <if test="quantity != null">quantity,</if>
+            <if test="shipmentPrice != null">shipment_price,</if>
+            <if test="shipmentDate != null">shipment_date,</if>
+            <if test="createBy != null and createBy != ''">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="remark != null">remark,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="storeId != null">#{storeId},</if>
+            <if test="goodsId != null">#{goodsId},</if>
+            <if test="shipmentTitle != null and shipmentTitle != ''">#{shipmentTitle},</if>
+            <if test="quantity != null">#{quantity},</if>
+            <if test="shipmentPrice != null">#{shipmentPrice},</if>
+            <if test="shipmentDate != null">#{shipmentDate},</if>
+            <if test="createBy != null and createBy != ''">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="remark != null">#{remark},</if>
+         </trim>
+    </insert>
+
+    <update id="updateGoodsShipmentInfo" parameterType="GoodsShipmentInfo">
+        update tb_goods_shipment_info
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="storeId != null">store_id = #{storeId},</if>
+            <if test="goodsId != null">goods_id = #{goodsId},</if>
+            <if test="shipmentTitle != null and shipmentTitle != ''">shipment_title = #{shipmentTitle},</if>
+            <if test="quantity != null">quantity = #{quantity},</if>
+            <if test="shipmentPrice != null">shipment_price = #{shipmentPrice},</if>
+            <if test="shipmentDate != null">shipment_date = #{shipmentDate},</if>
+            <if test="createBy != null and createBy != ''">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="remark != null">remark = #{remark},</if>
+        </trim>
+        where shipment_id = #{shipmentId}
+    </update>
+
+    <delete id="deleteGoodsShipmentInfoByShipmentId" parameterType="Long">
+        delete from tb_goods_shipment_info where shipment_id = #{shipmentId}
+    </delete>
+
+    <delete id="deleteGoodsShipmentInfoByShipmentIds" parameterType="String">
+        delete from tb_goods_shipment_info where shipment_id in 
+        <foreach item="shipmentId" collection="array" open="(" separator="," close=")">
+            #{shipmentId}
+        </foreach>
+    </delete>
+</mapper>

@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lz.manage.mapper.StoreStockInfoMapper">
+    
+    <resultMap type="StoreStockInfo" id="StoreStockInfoResult">
+        <result property="stockId"    column="stock_id"    />
+        <result property="storeId"    column="store_id"    />
+        <result property="goodsId"    column="goods_id"    />
+        <result property="stockName"    column="stock_name"    />
+        <result property="stock"    column="stock"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="remark"    column="remark"    />
+    </resultMap>
+
+    <sql id="selectStoreStockInfoVo">
+        select stock_id, store_id, goods_id, stock_name, stock, create_by, create_time, update_by, update_time, remark from tb_store_stock_info
+    </sql>
+
+    <select id="selectStoreStockInfoList" parameterType="StoreStockInfo" resultMap="StoreStockInfoResult">
+        <include refid="selectStoreStockInfoVo"/>
+        <where>  
+            <if test="stockId != null "> and stock_id = #{stockId}</if>
+            <if test="storeId != null "> and store_id = #{storeId}</if>
+            <if test="goodsId != null "> and goods_id = #{goodsId}</if>
+            <if test="stockName != null  and stockName != ''"> and stock_name like concat('%', #{stockName}, '%')</if>
+            <if test="createBy != null  and createBy != ''"> and create_by like concat('%', #{createBy}, '%')</if>
+            <if test="params.beginCreateTime != null and params.beginCreateTime != '' and params.endCreateTime != null and params.endCreateTime != ''"> and DATE_FORMAT(create_time, '%Y-%m-%d') between #{params.beginCreateTime} and #{params.endCreateTime}</if>
+            <if test="updateBy != null  and updateBy != ''"> and update_by like concat('%', #{updateBy}, '%')</if>
+            <if test="params.beginUpdateTime != null and params.beginUpdateTime != '' and params.endUpdateTime != null and params.endUpdateTime != ''"> and DATE_FORMAT(update_time, '%Y-%m-%d') between #{params.beginUpdateTime} and #{params.endUpdateTime}</if>
+        </where>
+    </select>
+    
+    <select id="selectStoreStockInfoByStockId" parameterType="Long" resultMap="StoreStockInfoResult">
+        <include refid="selectStoreStockInfoVo"/>
+        where stock_id = #{stockId}
+    </select>
+
+    <insert id="insertStoreStockInfo" parameterType="StoreStockInfo" useGeneratedKeys="true" keyProperty="stockId">
+        insert into tb_store_stock_info
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="storeId != null">store_id,</if>
+            <if test="goodsId != null">goods_id,</if>
+            <if test="stockName != null and stockName != ''">stock_name,</if>
+            <if test="stock != null">stock,</if>
+            <if test="createBy != null and createBy != ''">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="remark != null">remark,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="storeId != null">#{storeId},</if>
+            <if test="goodsId != null">#{goodsId},</if>
+            <if test="stockName != null and stockName != ''">#{stockName},</if>
+            <if test="stock != null">#{stock},</if>
+            <if test="createBy != null and createBy != ''">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="remark != null">#{remark},</if>
+         </trim>
+    </insert>
+
+    <update id="updateStoreStockInfo" parameterType="StoreStockInfo">
+        update tb_store_stock_info
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="storeId != null">store_id = #{storeId},</if>
+            <if test="goodsId != null">goods_id = #{goodsId},</if>
+            <if test="stockName != null and stockName != ''">stock_name = #{stockName},</if>
+            <if test="stock != null">stock = #{stock},</if>
+            <if test="createBy != null and createBy != ''">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="remark != null">remark = #{remark},</if>
+        </trim>
+        where stock_id = #{stockId}
+    </update>
+
+    <delete id="deleteStoreStockInfoByStockId" parameterType="Long">
+        delete from tb_store_stock_info where stock_id = #{stockId}
+    </delete>
+
+    <delete id="deleteStoreStockInfoByStockIds" parameterType="String">
+        delete from tb_store_stock_info where stock_id in 
+        <foreach item="stockId" collection="array" open="(" separator="," close=")">
+            #{stockId}
+        </foreach>
+    </delete>
+</mapper>

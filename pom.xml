@@ -233,6 +233,11 @@
                 <artifactId>store-common</artifactId>
                 <version>${store.version}</version>
             </dependency>
+            <dependency>
+                <groupId>com.lz</groupId>
+                <artifactId>store-manage</artifactId>
+                <version>${store.version}</version>
+            </dependency>
 
         </dependencies>
     </dependencyManagement>
@@ -244,6 +249,7 @@
         <module>store-quartz</module>
         <module>store-generator</module>
         <module>store-common</module>
+        <module>store-manage</module>
     </modules>
     <packaging>pom</packaging>
 
