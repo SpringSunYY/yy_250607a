@@ -3,7 +3,7 @@
 PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.lz.manage.mapper.StoreInfoMapper">
-    
+
     <resultMap type="StoreInfo" id="StoreInfoResult">
         <result property="storeId"    column="store_id"    />
         <result property="storeName"    column="store_name"    />
@@ -23,7 +23,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 
     <select id="selectStoreInfoList" parameterType="StoreInfo" resultMap="StoreInfoResult">
         <include refid="selectStoreInfoVo"/>
-        <where>  
+        <where>
             <if test="storeId != null "> and store_id = #{storeId}</if>
             <if test="storeName != null  and storeName != ''"> and store_name like concat('%', #{storeName}, '%')</if>
             <if test="status != null  and status != ''"> and status = #{status}</if>
@@ -32,8 +32,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="updateBy != null  and updateBy != ''"> and update_by like concat('%', #{updateBy}, '%')</if>
             <if test="params.beginUpdateTime != null and params.beginUpdateTime != '' and params.endUpdateTime != null and params.endUpdateTime != ''"> and DATE_FORMAT(update_time, '%Y-%m-%d') between #{params.beginUpdateTime} and #{params.endUpdateTime}</if>
         </where>
+        order by create_time desc
     </select>
-    
+
     <select id="selectStoreInfoByStoreId" parameterType="Long" resultMap="StoreInfoResult">
         <include refid="selectStoreInfoVo"/>
         where store_id = #{storeId}
@@ -86,7 +87,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </delete>
 
     <delete id="deleteStoreInfoByStoreIds" parameterType="String">
-        delete from tb_store_info where store_id in 
+        delete from tb_store_info where store_id in
         <foreach item="storeId" collection="array" open="(" separator="," close=")">
             #{storeId}
         </foreach>

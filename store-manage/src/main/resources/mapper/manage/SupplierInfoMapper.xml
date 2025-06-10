@@ -3,7 +3,7 @@
 PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.lz.manage.mapper.SupplierInfoMapper">
-    
+
     <resultMap type="SupplierInfo" id="SupplierInfoResult">
         <result property="supplierId"    column="supplier_id"    />
         <result property="supplierName"    column="supplier_name"    />
@@ -23,7 +23,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 
     <select id="selectSupplierInfoList" parameterType="SupplierInfo" resultMap="SupplierInfoResult">
         <include refid="selectSupplierInfoVo"/>
-        <where>  
+        <where>
             <if test="supplierId != null "> and supplier_id = #{supplierId}</if>
             <if test="supplierName != null  and supplierName != ''"> and supplier_name like concat('%', #{supplierName}, '%')</if>
             <if test="phone != null  and phone != ''"> and phone like concat('%', #{phone}, '%')</if>
@@ -33,8 +33,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="updateBy != null  and updateBy != ''"> and update_by like concat('%', #{updateBy}, '%')</if>
             <if test="params.beginUpdateTime != null and params.beginUpdateTime != '' and params.endUpdateTime != null and params.endUpdateTime != ''"> and DATE_FORMAT(update_time, '%Y-%m-%d') between #{params.beginUpdateTime} and #{params.endUpdateTime}</if>
         </where>
+        order by create_time desc
     </select>
-    
+
     <select id="selectSupplierInfoBySupplierId" parameterType="Long" resultMap="SupplierInfoResult">
         <include refid="selectSupplierInfoVo"/>
         where supplier_id = #{supplierId}
@@ -87,7 +88,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </delete>
 
     <delete id="deleteSupplierInfoBySupplierIds" parameterType="String">
-        delete from tb_supplier_info where supplier_id in 
+        delete from tb_supplier_info where supplier_id in
         <foreach item="supplierId" collection="array" open="(" separator="," close=")">
             #{supplierId}
         </foreach>

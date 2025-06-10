@@ -3,7 +3,7 @@
 PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.lz.manage.mapper.GoodsPurchaseInfoMapper">
-    
+
     <resultMap type="GoodsPurchaseInfo" id="GoodsPurchaseInfoResult">
         <result property="purchaseId"    column="purchase_id"    />
         <result property="storeId"    column="store_id"    />
@@ -26,7 +26,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 
     <select id="selectGoodsPurchaseInfoList" parameterType="GoodsPurchaseInfo" resultMap="GoodsPurchaseInfoResult">
         <include refid="selectGoodsPurchaseInfoVo"/>
-        <where>  
+        <where>
             <if test="purchaseId != null "> and purchase_id = #{purchaseId}</if>
             <if test="storeId != null "> and store_id = #{storeId}</if>
             <if test="goodsId != null "> and goods_id = #{goodsId}</if>
@@ -38,8 +38,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="updateBy != null  and updateBy != ''"> and update_by like concat('%', #{updateBy}, '%')</if>
             <if test="params.beginUpdateTime != null and params.beginUpdateTime != '' and params.endUpdateTime != null and params.endUpdateTime != ''"> and DATE_FORMAT(update_time, '%Y-%m-%d') between #{params.beginUpdateTime} and #{params.endUpdateTime}</if>
         </where>
+        order by create_time desc
     </select>
-    
+
     <select id="selectGoodsPurchaseInfoByPurchaseId" parameterType="Long" resultMap="GoodsPurchaseInfoResult">
         <include refid="selectGoodsPurchaseInfoVo"/>
         where purchase_id = #{purchaseId}
@@ -101,7 +102,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </delete>
 
     <delete id="deleteGoodsPurchaseInfoByPurchaseIds" parameterType="String">
-        delete from tb_goods_purchase_info where purchase_id in 
+        delete from tb_goods_purchase_info where purchase_id in
         <foreach item="purchaseId" collection="array" open="(" separator="," close=")">
             #{purchaseId}
         </foreach>
