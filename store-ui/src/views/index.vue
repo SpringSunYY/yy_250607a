@@ -1,6 +1,6 @@
 <template>
   <div class="app-container home">
-    <h1 style="text-align: center;font-size: 36px">仓库管理系统</h1>
+    <h1 style="text-align: center;font-size: 36px">超市仓库管理系统</h1>
   </div>
 </template>
 

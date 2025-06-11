@@ -10,7 +10,7 @@
 
     <name>store</name>
     <url>http://www.ruoyi.vip</url>
-    <description>仓库管理系统</description>
+    <description>超市仓库管理系统</description>
 
     <properties>
         <store.version>3.8.9</store.version>
